@@ -1,0 +1,4 @@
+
+class MyFavoriteGame:
+    pass
+
