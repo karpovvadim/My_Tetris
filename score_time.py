@@ -1,9 +1,17 @@
 from __future__ import annotations
 import curses
 import time as lib_time
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from manager_windows import ManagerWindows
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+from manager_windows import ManagerWindows
+
+
+def convert_to_format(sec):
+    hour = sec // 3600
+    sec %= 3600
+    min = sec // 60
+    sec %= 60
+    return "%d:%02d:%02d" % (hour, min, sec)
 
 
 class ScoreTime:
@@ -12,21 +20,17 @@ class ScoreTime:
     score: int
     time: int
     last_time: float
-    work_timer: bool
+    _status: bool
 
-    def __init__(self, manager_window: ManagerWindows, score: int = 0, time: int = 0) -> None:
-        self.window = manager_window.get_window(self)
-        self.window.border(0)
-        self.window.refresh()
-        self.window.keypad(True)  # режим клавивиатуры
+    def __init__(self, score: int = 0, time: int = 0) -> None:
+        self.window = ManagerWindows().window_score_timer
         self.score = score
         self.time = time
         self.last_time = lib_time.time()
-        self.work_timer = False
-        self.start_pause_time = 0
-        self.pause_time = 0
+        self.start_pause_timer = 0
+        self.pause_timer = 0
 
-    def score_destroy_line(self, n: int):     #  К-во убираемых строк, подсчёт очков по линиям
+    def score_destroy_line(self, n: int):  # К-во убираемых строк, подсчёт очков по линиям
         if n == 1:
             self.score += 5
         elif n == 2:
@@ -36,38 +40,33 @@ class ScoreTime:
         elif n == 4:
             self.score += 75
 
-    def score_from_figure(self, count: int):   #    подсчёт очков за фигуру
+    def score_from_figure(self, count: int):  # подсчёт очков за фигуру
         self.score += count
 
-    def timer_start(self):
-        self.work_timer = True
+    def get_score(self):
+        return self.score
 
-    def timer_pause(self):
-        if self.work_timer:
-            self.work_timer = False
-            self.start_pause_time = lib_time.time()
-        elif not self.work_timer:
-            self.work_timer = True
-            self.pause_time += lib_time.time() - self.start_pause_time
+    def get_time(self):
+        return self.time
 
-    def timer_stop(self):
-        self.work_timer = False
+    def pause_start(self):
+        self.start_pause_timer = lib_time.time()
 
-    def timer_reset(self):
-        if not self.work_timer:
-            self.work_timer = False
-        else:
-            self.last_time = lib_time.time() - self.pause_time
-            self.window.clear()
-            self.window.border(0)
-            self.work_timer = True
+    def pause_stop(self):
+        self.pause_timer += lib_time.time() - self.start_pause_timer
 
-    def draw(self):   #  Отображение очков и времени
-        if self.work_timer:
-            self.time = int(lib_time.time() - self.pause_time - self.last_time)
-            # self.pause_time = 0
+    def reset(self):
+        self.last_time = lib_time.time()
+        self.pause_timer = 0
+        self.score = 0
+
+    def draw(self):  # Отображение очков и времени
+        self.window.clear()
+        str_time = convert_to_format(self.time)
+        self.time = int(lib_time.time() - self.pause_timer - self.last_time)
         self.window.addstr(1, 1, "Time play:", curses.color_pair(1))
-        self.window.addstr(2, 1, str(self.time), curses.color_pair(1))
+        self.window.addstr(2, 1, str_time, curses.color_pair(1))
         self.window.addstr(4, 1, "Score:", curses.color_pair(3))
         self.window.addstr(5, 1, str(self.score), curses.color_pair(3))
+        self.window.border()
         self.window.refresh()

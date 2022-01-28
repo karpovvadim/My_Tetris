@@ -1,4 +1,4 @@
-from __future__ import annotations
+#from __future__ import annotations
 import curses
 import random
 from current_object7 import Figura7
@@ -9,27 +9,24 @@ from current_object3 import Figura3
 from current_object2 import Figura2
 from current_object1 import Figura1
 from typing import Union
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from manager_windows import ManagerWindows
+#from typing import TYPE_CHECKING
+#if TYPE_CHECKING:
+from manager_windows import ManagerWindows
 
 
 class MagicCrearter:
     manager_window: ManagerWindows
     start_x: int
     start_y: int
-    current_object: Union[None, Figura1, Figura2, Figura3, Figura4, Figura5, Figura6, Figura7] = None
+    current_object: None | Figura1 | Figura2 | Figura3 | Figura4 | Figura5 | Figura6 | Figura7 = None
     window: curses
 
-    def __init__(self, manager_window: ManagerWindows):
+    def __init__(self):
         """
         window_magic_creater
         :param manager_window: ManagerWindows
         """
-        self.window = manager_window.get_window(self)
-        self.window.border(0)
-        self.window.refresh()
-        self.window.keypad(True)  # режим клавивиатуры
+        self.window = ManagerWindows().window_magic_creater
         self.start_x = 5
         self.start_y = 2
         self.current_object = None
@@ -82,7 +79,7 @@ class MagicCrearter:
     def draw(self):
         self.window.clear()
         self.current_object.draw()
-        self.window.border(0)
+        self.window.border(0, 0, 0, 0)
         self.window.refresh()
 
 

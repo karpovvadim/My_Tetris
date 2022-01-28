@@ -11,9 +11,7 @@ from current_object4 import Figura4
 from current_object3 import Figura3
 from current_object2 import Figura2
 from current_object1 import Figura1
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from manager_windows import ManagerWindows
+from manager_windows import ManagerWindows, ManagerWindowsStatus
 
 
 class GameField:
@@ -29,40 +27,43 @@ class GameField:
     cur_figura: Union[Figura1, Figura2, Figura3, Figura4, Figura5, Figura6, Figura7]
     last_time: float
 
-    def __init__(self, manager_window: ManagerWindows, magic_creater: MagicCrearter, score_object: ScoreTime):
+    def __init__(self, magic_creater: MagicCrearter, score_object: ScoreTime):
         self.magic_creater = magic_creater
         self.score_object = score_object
-        self.manager_window = manager_window
+        self.manager_window = ManagerWindows()
         """
         window_field
         :param window: window
         """
-        self.window = manager_window.get_window(self)
+        self.window = self.manager_window.window_field
         self.max_x = self.window.getmaxyx()[1]-2
         self.max_y = self.window.getmaxyx()[0]-2
         self.start_x = 5
         self.start_y = 2
         self.arr = [0 for v in range(self.max_x * self.max_y)]
-        self._status = 1
         self.cur_figura = self.magic_creater.create()
         self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
-        self.window.border(0)
         self.window.keypad(True)  # режим клавивиатуры
-        self.window.nodelay(True)
+        self.window.nodelay(True)   # getch() будет неблокирующим.
+        self.last_time = time.time()
+        self.pause_timer = 0
+        self.start_pause_timer = 0
+        self.pause_down = 0.5
+
+    def reset(self):
+        self.window = self.manager_window.window_field
+        self.arr = [0 for v in range(self.max_x * self.max_y)]
+        self.cur_figura = self.magic_creater.create()
+        self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
         self.last_time = time.time()
         self.pause_timer = 0
         self.start_pause_timer = 0
 
-    def status(self):
-        return self._status
+    def pause_start(self):
+        self.start_pause_timer = time.time()
 
-    def pause_game(self):
-        if self._status == 1:
-            self._status = 3
-            self.start_pause_timer = time.time()
-        elif self._status == 3:
-            self._status = 1
-            self.pause_timer = time.time() - self.start_pause_timer
+    def pause_stop(self):
+        self.pause_timer = time.time() - self.start_pause_timer
 
     def _work_down(self):
         """
@@ -84,9 +85,10 @@ class GameField:
             self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
             if self.cur_figura.exist is False:
                 """
-                Стакан полный. Игра время игры остановились.
+                Стакан полный. Игра и время игры остановились.
                 """
-                self._status = 5
+                self.arr = [0 for v in range(self.max_x * self.max_y)]
+                self.manager_window.set_status(ManagerWindowsStatus.END_GAME)
 
     def draw(self):
         """
@@ -96,7 +98,7 @@ class GameField:
         """
         условие выполнение кода в блоке if через время задержки после вызова метода draw() объекта класса GameField
         """
-        if time.time() - self.pause_timer - self.last_time > 0.5:
+        if time.time() - self.pause_timer - self.last_time > self.pause_down:
             self.pause_timer = 0
             """
             фиксация last_time для нового отсчёта времени изменения положения по оси y
@@ -116,8 +118,9 @@ class GameField:
         elif c == curses.KEY_UP:
             self.cur_figura.rotate()
         elif c == curses.KEY_DOWN:
-            self.cur_figura.down()
-            self._work_down()
+            while self.cur_figura.exist is True:
+                self.cur_figura.down()
+        self._work_down()
         """
         проверка и подсчёт целых строк
         """
@@ -150,5 +153,8 @@ class GameField:
         вызов метода draw() у текущего объекта фигуры по коорд x и y
         """
         self.cur_figura.draw()
-
-
+        self.window.border()
+        """
+        Обновлние отображения (синхронизизация фактического экрана с предыдущими методами рисования / удаления)
+        """
+        self.window.refresh()
