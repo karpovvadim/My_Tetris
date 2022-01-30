@@ -39,28 +39,23 @@ class TopPlayers:
 
     def load_from_file(self):
         try:
-            filename = open("top_players", 'r')
+            with open("top_players") as filename:
+                for line in filename:
+                    read_str = line.split(";")
+                    if read_str[2][-1] == "\n":
+                        value = read_str[2][0:-1]
+                    else:
+                        value = read_str[2]
+                    self.top_dict[KeyScore(int(read_str[0]), int(read_str[1]))] = value
         except FileNotFoundError:
-            filename = open("top_players", 'w')
-            filename.close()
-        finally:
-            filename = open("top_players", 'r')
-            for line in filename:
-                read_str = line.split(";")
-                if read_str[2][-1] == "\n":
-                    value = read_str[2][0:-1]
-                else:
-                    value = read_str[2]
-                self.top_dict[KeyScore(int(read_str[0]), int(read_str[1]))] = value
-            filename.close()
+            pass
 
     def save_to_file(self):
-        filename = open("top_players", "w")
-        for key, value in self.top_dict.items():
-            write_str = str(key.score) + ";" + str(key.time) + ";" + value
-            filename.write(write_str)
-            filename.write("\n")
-        filename.close()
+        with open("top_players", "w") as filename:
+            for key, value in self.top_dict.items():
+                write_str = str(key.score) + ";" + str(key.time) + ";" + value
+                filename.write(write_str)
+                filename.write("\n")
 
     def compare_result(self):
         if self.top_dict == {}:
