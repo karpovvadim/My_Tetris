@@ -30,7 +30,8 @@ class MyFavoriteGame:
         self.game_field = GameField(self.magic_creater, self.score_timer)
         self.menu: Menu = Menu()
         self.top_players: TopPlayers = TopPlayers()
-        self.top_players.load_from_file()
+    #    self.top_players.load_from_file()
+        self.top_players.load_from_json()
         self.info: Info = Info()
         self.score: int = 0
         self.time: int = 0
@@ -80,7 +81,8 @@ class MyFavoriteGame:
                     self.manager_window.set_status(ManagerWindowsStatus.MENU)
 
                 case ManagerWindowsStatus.EXIT:
-                    self.top_players.save_to_file()
+                 #   self.top_players.save_to_file()
+                    self.top_players.save_to_json()
                     break
 
                 case ManagerWindowsStatus.MENU:

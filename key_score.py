@@ -16,3 +16,6 @@ class KeyScore:
                 return True
             else:
                 return False
+
+    def to_json(self):
+        return {self.score, self.time}
