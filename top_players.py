@@ -61,14 +61,9 @@ class TopPlayers:
         try:
             with open("top_players.json") as filename:
                 file_json = json.load(filename)
-                for line in file_json.items():
-                    for i in line:
-                        if isinstance(i, str):
-                            value = i
-                        elif isinstance(i, dict):
-                            q = i['score']
-                            w = i['time']
-                            self.top_dict[KeyScore(q, w)] = value
+                x_file = [line for line in file_json]
+                for i in x_file:
+                    self.top_dict[KeyScore(file_json[i]["score"], file_json[i]["time"])] = i
         except FileNotFoundError:
             return None
 
