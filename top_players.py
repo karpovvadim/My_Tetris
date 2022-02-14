@@ -3,6 +3,8 @@ import curses
 from manager_windows import ManagerWindows, ManagerWindowsStatus
 from key_score import KeyScore
 import json
+from to_json import ToJson
+from to_json import default
 
 
 class TopPlayers:
@@ -18,6 +20,7 @@ class TopPlayers:
         self.actual_sorted = False
         self.top_dict = {}
         self.sorted_list = []
+        self.to_json = ToJson(self.top_dict)
 
     @staticmethod
     def convert_to_format(sec):
@@ -68,9 +71,9 @@ class TopPlayers:
             return None
 
     def save_to_json(self):
-        dict_json = dict((v, k.__dict__) for k, v in self.top_dict.items())
+        dict_json = self.to_json.to_json()
         with open("top_players.json", "w") as write_file:
-            json.dump(dict_json, write_file, indent=4)
+            json.dump(dict_json, write_file, default=default, indent=4)
 
     def compare_result(self):
         if self.top_dict == {}:
