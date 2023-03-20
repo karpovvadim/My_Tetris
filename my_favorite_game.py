@@ -3,7 +3,7 @@ from game_field import GameField
 from score_time import ScoreTime
 from manager_windows import ManagerWindows, ManagerWindowsStatus
 from menu import Menu
-from top_players import TopPlayers
+from TopPlayerGet.top_players import TopPlayers
 from info import Info
 import curses
 import time
