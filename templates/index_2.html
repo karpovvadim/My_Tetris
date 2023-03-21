@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+
+{% block menu %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <h3>Message:</h3>
+    <h2>{{server_message}}</h2>
+    <div>
+        <p>
+            <label for="count_lines">Укажите количество строк</label>
+            <input id="count_lines" placeholder="{{countLines}}" data-count-lines={{count_lines}}
+                   value={{count_lines}} type="number" min="5" max="2000">
+        </p>
+        <p></p>
+            <button id="left" data-count-lines={{count_lines}} data-start-left={{start_left}}
+                    onclick="on_left()" {{disabled_left}}>on_left</button>
+
+            <button id="right" data-count-lines={{count_lines}} data-start-right={{start_right}}
+                    onclick="on_right()" {{disabled_right}}>on_right</button>
+
+            <button id="btn" onclick="get_data()">Ввести количество строк</button>
+
+    </div>
+{% set finish = message_from_bd[end-1][0] | int(message_from_bd[end-1][0]) %}
+{% if start_right < finish %}
+    {% set finish = start_right %}
+{% endif %}
+    <p><h1>Results: с {{start_right - count_lines}} по {{finish}}</h1></p>
+
+    <h3 class="table">
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            {% for i in range(start, end) %}
+            <tr>
+                <th>{{message_from_bd[i][0]}}</th>
+                <th>{{message_from_bd[i][1]}}</th>
+                <th>{{message_from_bd[i][2]}}</th>
+                <th>{{message_from_bd[i][3]}}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </h3>
+
+    <hr/>
+    <p>перейти на верх страницы: <a href="#Menu">наверх</a></p>
+
+    <script src="static/js/data_js.js"></script>
+
+{% endblock %}
