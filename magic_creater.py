@@ -1,4 +1,4 @@
-#from __future__ import annotations
+# from __future__ import annotations
 import curses
 import random
 from current_object7 import Figura7

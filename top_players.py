@@ -30,7 +30,8 @@ class TopPlayers:
     top_dict: dict
     sorted_list: list
 
-    def __init__(self):
+    def __init__(self, args):
+        self.args = args
         self.manager_window = ManagerWindows()
         self.window = self.manager_window.window_top_players
         self.window.keypad(True)
@@ -47,9 +48,16 @@ class TopPlayers:
     def convert_to_format(sec):
         hour = sec // 3600
         sec %= 3600
-        minut = sec // 60
+        minuts = sec // 60
         sec %= 60
-        return "%d:%02d:%02d" % (hour, minut, sec)
+        return "%d:%02d:%02d" % (hour, minuts, sec)
+
+    @staticmethod
+    def convert_to_sec(str_time):
+        hour = int(str_time[0:2])
+        minuts = int(str_time[3:5])
+        sec = minuts * 60 + int(str_time[6:])
+        return sec
 
     def exit_to_menu(self):
         self.manager_window.set_status(ManagerWindowsStatus.MENU)
@@ -95,6 +103,19 @@ class TopPlayers:
         with open("top_players.json", "w") as write_file:
             json.dump(to_json(self.top_dict), write_file, default=default, indent=4)
 
+    def load_from_db(self, data=None):
+        url = f"http://{self.args.ip}:{self.args.port}/get_top_players"  # URL, отправляющий данные
+        with urllib.request.urlopen(url) as response:
+            values = response.read().decode()
+            data_dict = json.loads(values)
+
+            for key, data in data_dict.items():
+                time = int(TopPlayers.convert_to_sec(data[-9:-1]))
+                data_tuple = data.partition(',')
+                name = data_tuple[0][1:]
+                score = int(data_tuple[2].partition(',')[0])
+                self.top_dict[KeyScore(score, time)] = name
+
     def compare_result(self):
         if self.top_dict == {}:
             self.top_dict[KeyScore(self.score, self.time)] = self.name
@@ -114,9 +135,12 @@ class TopPlayers:
             if result_in_top is True:
                 self.top_dict[KeyScore(self.score, self.time)] = self.name
                 self.actual_sorted = False
-        self.set_request()
-        self.save_to_json()
-        self.save_to_file()
+
+        if self.args.ip:
+            self.set_request()
+        else:
+            self.save_to_json()
+        # self.save_to_file()
         self.name = str()
         self.score = 0
         self.time = 0
@@ -165,13 +189,13 @@ class TopPlayers:
             self.window.border()
             self.window.refresh()
 
-    def set_request(self):
+    def set_request(self):  # установить запрос
         str_time = TopPlayers.convert_to_format(self.time)
         values = {'name': self.name,
                   'score': self.score,
                   'time': str_time}
 
-        url = "http://127.0.0.1:5000/query"  # URL - адрес, получающий данные
+        url = f"http://{self.args.ip}:{self.args.port}/add_new_score"  # URL - адрес, получающий данные
 
         data = str(json.dumps(values))
 

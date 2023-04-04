@@ -1,12 +1,15 @@
+#!/usr/bin/python3.10
+
 from magic_creater import MagicCrearter
 from game_field import GameField
 from score_time import ScoreTime
 from manager_windows import ManagerWindows, ManagerWindowsStatus
 from menu import Menu
-from TopPlayerGet.top_players import TopPlayers
+from top_players import TopPlayers
 from info import Info
 import curses
 import time
+import argparse
 
 
 class MyFavoriteGame:
@@ -19,7 +22,7 @@ class MyFavoriteGame:
     game_field: GameField
     manager_window: ManagerWindows
 
-    def __init__(self, depth_win: int, weight_win: int, corner_win_y: int, corner_win_x: int):
+    def __init__(self, args,  depth_win: int, weight_win: int, corner_win_y: int, corner_win_x: int):
         self.weight_win = weight_win
         self.depth_win = depth_win
         self.corner_win_y = corner_win_y
@@ -29,9 +32,12 @@ class MyFavoriteGame:
         self.score_timer = ScoreTime()
         self.game_field = GameField(self.magic_creater, self.score_timer)
         self.menu: Menu = Menu()
-        self.top_players: TopPlayers = TopPlayers()
-        #    self.top_players.load_from_file()
-        self.top_players.load_from_json()
+        self.top_players: TopPlayers = TopPlayers(args)
+        # self.top_players.load_from_file()
+        if args.ip:
+            self.top_players.load_from_db()
+        else:
+            self.top_players.load_from_json()
         self.info: Info = Info()
         self.score: int = 0
         self.time: int = 0
@@ -81,7 +87,7 @@ class MyFavoriteGame:
                     self.manager_window.set_status(ManagerWindowsStatus.MENU)
 
                 case ManagerWindowsStatus.EXIT:
-                    #  self.top_players.save_to_file()
+                    # self.top_players.save_to_file()
                     self.top_players.save_to_json()
                     break
 
@@ -97,6 +103,32 @@ class MyFavoriteGame:
                     self.info.draw()
 
             self.manager_window.clear_get()  # очистка полученных символов
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Tetris game",
+        epilog="""
+    run examples:
+        python3.10 ./my_favorite_game --ip 127.0.0.1 --port 5000
+        python3.10 ./my_favorite_game
+    """,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument(
+        '--ip', '-i',
+        help='ip adress flash server',
+        default=None,
+        required=False)
+
+    parser.add_argument(
+        '--port', '-p',
+        help='port flash server',
+        default=None,
+        required=False)
+
+    return parser.parse_args()
 
 
 def main():
@@ -116,7 +148,7 @@ def main():
         curses.init_pair(13, 25, curses.COLOR_BLACK)
         curses.init_pair(14, 200, curses.COLOR_BLACK)
         time.time()
-        game = MyFavoriteGame(14, 12, 3, 3)
+        game = MyFavoriteGame(parse_args(), 14, 12, 3, 3)
         game.run_game()
 
     finally:

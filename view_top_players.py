@@ -1,28 +1,114 @@
+import argparse
+import json
+import os
 import psycopg2
 from psycopg2 import Error
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
+connection = None
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Change data",
+        epilog="""
+    run examples:
+        run 'view_top_players.py'
+    """,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser.add_argument('--db_ip', default='127.0.0.1')
+
+    parser.add_argument('--db_port', default=5432)
+
+    parser.add_argument('--db_user', default='postgres')
+
+    parser.add_argument('--db_pass', default='123')
+
+    parser.add_argument('--db_base', default='players')
+
+    parser.add_argument('--flaskip', default='127.0.0.1')
+
+    parser.add_argument('--flaskport', default='5000')
+
+    return parser.parse_args()
+
+
+def set_connection(db_ip, db_user, db_pass, db_base, db_port):
+    global connection
+    connection = psycopg2.connect(  # Подключение к существующей базе данных
+        host=db_ip,
+        user=db_user,
+        port=db_port,
+        password=db_pass,
+        database=db_base
+    )
+    connection.autocommit = True
+
+
+@app.route('/get_top_players', methods=['GET'])
+def get_top_players():  # return top 10 players to My_Tetris
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("""
+            SELECT *
+            FROM (SELECT ROW_NUMBER() OVER () AS num, players_sort
+                FROM (SELECT name, score, time
+                    FROM players ORDER BY score DESC, time)
+                    AS players_sort)
+                AS players_sort_num
+            WHERE num < 11;
+            """)
+            values = dict(cursor.fetchall())
+            print(values)
+
+    except (Exception, Error) as _error:
+        print("Ошибка при работе с PostgreSQL", _error)
+    finally:
+        return values  # ''' The website value is: '''
+
+
+@app.route('/add_new_score', methods=['POST'])
+def add_new_score():  # from My_tetris new score
+    name = None
+    score = None
+    time = None
+    if request.method == "POST":
+        data = request.get_data()
+        print(data)
+        data = json.loads(data)
+        print(data)
+        name = data['name']
+        score = data['score']
+        time = data['time']
+
+    try:
+        global connection
+        with connection.cursor() as cursor:  # cursor = connection.cursor()
+            cursor.execute("""
+            INSERT INTO players (name, score, time)
+            VALUES (%s, %s, %s)""", (name, score, time))  # Курсор для выполнения операций с базой данных
+
+    except (Exception, Error) as _error:
+        print("Ошибка при работе с PostgreSQL", _error)
+    finally:
+        return ''' The website value is: '''
+
 
 def query_bd_players(start, end):
-    connection = None
     try:
-        connection = psycopg2.connect(
-            host="127.0.0.1",
-            user="postgres",
-            password="123",
-            database="players"
-        )
-        connection.autocommit = True
-
-        insert_query = f"SELECT * FROM (SELECT ROW_NUMBER() OVER () num, players_sort\
-                       FROM (SELECT name, score, time FROM players ORDER BY score DESC, time)\
-                       AS players_sort) AS players_sor_num\
-                       WHERE num >= {start} AND num <= {end};"
-
         with connection.cursor() as cursor:
-            cursor.execute(insert_query)
+            cursor.execute("""
+            SELECT *
+            FROM (SELECT ROW_NUMBER() OVER () num, players_sort
+                FROM (SELECT name, score, time
+                    FROM players ORDER BY score DESC, time)
+                    AS players_sort)
+                AS players_sort_num
+            WHERE num >= %s AND num <= %s;""", (start, end))
             values = cursor.fetchall()
 
     except (Exception, Error) as _error:
@@ -162,4 +248,6 @@ def view_2():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=5055)
+    args = parse_args()
+    set_connection(args.db_ip, args.db_user, args.db_pass, args.db_base, args.db_port)
+    app.run(debug=True, host=args.flaskip, port=args.flaskport)
