@@ -6,8 +6,6 @@ import json
 import urllib.parse
 import urllib.request
 import urllib.error
-import socket
-from urllib.request import build_opener
 
 
 def default(obj):
@@ -56,7 +54,7 @@ class TopPlayers:
     def convert_to_sec(str_time):
         hour = int(str_time[0:2])
         minuts = int(str_time[3:5])
-        sec = minuts * 60 + int(str_time[6:])
+        sec = hour * 3600 + minuts * 60 + int(str_time[6:])
         return sec
 
     def exit_to_menu(self):
@@ -103,12 +101,11 @@ class TopPlayers:
         with open("top_players.json", "w") as write_file:
             json.dump(to_json(self.top_dict), write_file, default=default, indent=4)
 
-    def load_from_db(self, data=None):
+    def load_from_db(self):
         url = f"http://{self.args.ip}:{self.args.port}/get_top_players"  # URL, отправляющий данные
         with urllib.request.urlopen(url) as response:
             values = response.read().decode()
             data_dict = json.loads(values)
-
             for key, data in data_dict.items():
                 time = int(TopPlayers.convert_to_sec(data[-9:-1]))
                 data_tuple = data.partition(',')
@@ -135,7 +132,6 @@ class TopPlayers:
             if result_in_top is True:
                 self.top_dict[KeyScore(self.score, self.time)] = self.name
                 self.actual_sorted = False
-
         if self.args.ip:
             self.set_request()
         else:

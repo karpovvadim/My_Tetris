@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 import psycopg2
 from psycopg2 import Error
 from flask import Flask, request, render_template
@@ -63,12 +62,11 @@ def get_top_players():  # return top 10 players to My_Tetris
             WHERE num < 11;
             """)
             values = dict(cursor.fetchall())
-            print(values)
 
     except (Exception, Error) as _error:
         print("Ошибка при работе с PostgreSQL", _error)
     finally:
-        return values  # ''' The website value is: '''
+        return values
 
 
 @app.route('/add_new_score', methods=['POST'])
@@ -78,7 +76,6 @@ def add_new_score():  # from My_tetris new score
     time = None
     if request.method == "POST":
         data = request.get_data()
-        print(data)
         data = json.loads(data)
         print(data)
         name = data['name']
@@ -114,10 +111,7 @@ def query_bd_players(start, end):
     except (Exception, Error) as _error:
         print("Ошибка при работе с PostgreSQL", _error)
     finally:
-        if connection:
-            connection.close()
-            print("Соединение с PostgreSQL закрыто")
-    return values
+        return values
 
 
 def get_new_values(values, len_values):
@@ -136,7 +130,7 @@ def get_new_values(values, len_values):
 
 @app.route('/view_table_1', methods=['GET', 'POST'])
 def view_1():
-    count_lines = 5
+    count_lines = 10
     start = 1
     end = 0
     start_right = 0
@@ -192,8 +186,8 @@ def view_1():
 
 @app.route('/json-view_table', methods=['GET', 'POST'])
 def view_2():
-    start_count_lines = 5
-    count_lines = 5
+    start_count_lines = 10
+    count_lines = 10
     start: int = 1
     start_right = 1
     start_left = 1

@@ -1,4 +1,4 @@
-# from __future__ import annotations
+from __future__ import annotations
 import curses
 import random
 from current_object7 import Figura7
@@ -9,8 +9,6 @@ from current_object3 import Figura3
 from current_object2 import Figura2
 from current_object1 import Figura1
 from typing import Union
-#from typing import TYPE_CHECKING
-#if TYPE_CHECKING:
 from manager_windows import ManagerWindows
 
 
@@ -81,6 +79,3 @@ class MagicCrearter:
         self.current_object.draw()
         self.window.border(0, 0, 0, 0)
         self.window.refresh()
-
-
-

@@ -8,8 +8,8 @@
 {% block content %}
     <form action=" " method="post">
         <p>
-        <p>Введите количество строк от 5 до 2000</p>
-        <input type="number" name="count_lines" value={{count_lines}} min="5" max="2000">
+        <p>Введите количество строк от 10 до 2000</p>
+        <input type="number" name="count_lines" value={{count_lines}} min="10" max="2000">
         <button>Применить</button>
     </form>
 
@@ -17,10 +17,10 @@
     <h2>{{server_message}}</h2>
 
         <p></p>
-            <a href="http://localhost:5055/view_table_1?count_lines={{count_lines}}&query_left=True&start_left=
+            <a href="http://127.0.0.1:5000/view_table_1?count_lines={{count_lines}}&query_left=True&start_left=
             {{start_left}}&disabled_left={{disabled_left}}"><button {{disabled_left}}>left</button></a>
 
-            <a href="http://localhost:5055/view_table_1?count_lines={{count_lines}}&query_right=True&start_right=
+            <a href="http://127.0.0.1:5000/view_table_1?count_lines={{count_lines}}&query_right=True&start_right=
             {{start_right}}&disabled_right={{disabled_right}}"><button {{disabled_right}}>right</button></a>
 
     <h1>Results:</h1>

@@ -12,7 +12,7 @@
         <p>
             <label for="count_lines">Укажите количество строк</label>
             <input id="count_lines" placeholder="{{countLines}}" data-count-lines={{count_lines}}
-                   value={{count_lines}} type="number" min="5" max="2000">
+                   value={{count_lines}} type="number" min="10" max="2000">
         </p>
         <p></p>
             <button id="left" data-count-lines={{count_lines}} data-start-left={{start_left}}
@@ -28,9 +28,9 @@
 {% if start_right < finish %}
     {% set finish = start_right %}
 {% endif %}
-    <p><h1>Results: с {{start_right - count_lines}} по {{finish}}</h1></p>
+    <p><h1>Results: с {{start_right - count_lines}} по {{finish}}</h1>
 
-    <h3 class="table">
+<h3 class="table">
         <table border="1">
             <thead>
                 <tr>

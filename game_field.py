@@ -40,7 +40,7 @@ class GameField:
         self.max_y = self.window.getmaxyx()[0]-2
         self.start_x = 5
         self.start_y = 2
-        self.arr = [0 for v in range(self.max_x * self.max_y)]
+        self.arr = [0 for _ in range(self.max_x * self.max_y)]
         self.cur_figura = self.magic_creater.create()
         self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
         self.window.keypad(True)  # режим клавивиатуры
@@ -52,7 +52,7 @@ class GameField:
 
     def reset(self):
         self.window = self.manager_window.window_field
-        self.arr = [0 for v in range(self.max_x * self.max_y)]
+        self.arr = [0 for _ in range(self.max_x * self.max_y)]
         self.cur_figura = self.magic_creater.create()
         self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
         self.last_time = time.time()
@@ -67,7 +67,7 @@ class GameField:
 
     def _work_down(self):
         """
-        условие выполнение кода в блоке if, если фигура опустилась до конца, то exist is False
+        Условие выполнение кода в блоке if, если фигура опустилась до конца, то exist is False
         """
         if self.cur_figura.exist is False:
             """
@@ -87,12 +87,12 @@ class GameField:
                 """
                 Стакан полный. Игра и время игры остановились.
                 """
-                self.arr = [0 for v in range(self.max_x * self.max_y)]
+                self.arr = [0 for _ in range(self.max_x * self.max_y)]
                 self.manager_window.set_status(ManagerWindowsStatus.END_GAME)
 
     def draw(self):
         """
-        очистка изображения предыдущих клеток
+        Очистка изображения предыдущих клеток
         """
         self.window.clear()
         """

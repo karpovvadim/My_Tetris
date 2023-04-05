@@ -38,7 +38,6 @@ class ManagerWindows(Singleton):
             self.corner_win_y = corner_win_y
             self.corner_win_x = corner_win_x
             self.char = None
-
             self.window_menu = curses.newwin(13, 20, 3, 10)
             self.window_score_timer = curses.newwin(7, 12, 10, 18)
             self.window_magic_creater = curses.newwin(6, 12, 3, 18)
@@ -75,7 +74,7 @@ class ManagerWindows(Singleton):
 
     def clear_get(self):
         """
-        очистка полученных символов
+        Очистка полученных символов
         """
         while -1 != self.window_field.getch():
             pass
@@ -85,5 +84,3 @@ class ManagerWindows(Singleton):
 
     def get_status(self):
         return self.game_status    #  получение статуса
-
-

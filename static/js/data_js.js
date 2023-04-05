@@ -1,6 +1,6 @@
 
 function on_left() {
-    const url = 'http://localhost:5055/json-view_table';
+    const url = 'http://127.0.0.1:5000/json-view_table';
     var left = document.getElementById('left');               // получаем доступ к элементу input с id = "left"
     var _startLeft = left.dataset.startLeft;           // получаем значение атрибута data-start-left
 
@@ -27,7 +27,7 @@ function on_left() {
 }
 
 function on_right() {
-    var url = 'http://localhost:5055/json-view_table';
+    var url = 'http://127.0.0.1:5000/json-view_table';
 
     var right = document.getElementById('right');            // получаем доступ к элементу input с id = "right"
     var _startRight = right.dataset.startRight;        // получаем значение атрибута data-star-right
@@ -55,7 +55,7 @@ function on_right() {
 }
 
 function get_data() {
-    var url = 'http://localhost:5055/json-view_table';
+    var url = 'http://127.0.0.1:5000/json-view_table';
 
     var count = document.getElementById('count_lines'); // получаем доступ к элементу input с id = "count_lines"
     var _countLines = count.value;  // получаем значение атрибута value
