@@ -5,7 +5,7 @@
 3. Run Flask - 'view_top_players.py'
 
     If used database 
-4. Start game - 'my_favorite_game.py --ip 127.0.0.1 --port 5000'
+Start game - 'my_favorite_game.py --ip 127.0.0.1 --port 5000'
 
     If used JSON 
-4. Start game - 'my_favorite_game.py'
+Start game - 'my_favorite_game.py'
