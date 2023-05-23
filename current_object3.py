@@ -179,7 +179,7 @@ class Figura3:
             if self.y < self.max_y:
                 if self.arr[(self.y - (3 - down_y)) * self.max_x + self.x] == 1 or \
                         self.arr[(self.y - (2 - down_y)) * self.max_x + self.x] == 1 or \
-                        self.arr[(self.y - (2 - down_y)) * self.max_x + self.x - 1] == 1 or \
+                        self.arr[(self.y - (1 - down_y)) * self.max_x + self.x - 1] == 1 or \
                         self.arr[(self.y - (1 - down_y)) * self.max_x + self.x] == 1:
                     if down_y == 1:
                         self.arr[(self.y - 3) * self.max_x + self.x] = 1
