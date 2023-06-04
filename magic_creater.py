@@ -22,7 +22,7 @@ class MagicCrearter:
     def __init__(self):
         """
         window_magic_creater
-        :param manager_window: ManagerWindows
+        # :param manager_window: ManagerWindows
         """
         self.window = ManagerWindows().window_magic_creater
         self.start_x = 5

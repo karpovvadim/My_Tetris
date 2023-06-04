@@ -223,7 +223,7 @@ def view_2():
         start_right = start + count_lines
         start_left = start - count_lines
         if start != 1:
-            disabled_left = 'anabled'
+            disabled_left = 'enabled'
         if len_new_val <= count_lines:
             disabled_right = 'disabled'
             end = len_new_val

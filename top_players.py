@@ -46,15 +46,15 @@ class TopPlayers:
     def convert_to_format(sec):
         hour = sec // 3600
         sec %= 3600
-        minuts = sec // 60
+        minutes = sec // 60
         sec %= 60
-        return "%d:%02d:%02d" % (hour, minuts, sec)
+        return "%d:%02d:%02d" % (hour, minutes, sec)
 
     @staticmethod
     def convert_to_sec(str_time):
         hour = int(str_time[0:2])
-        minuts = int(str_time[3:5])
-        sec = hour * 3600 + minuts * 60 + int(str_time[6:])
+        minutes = int(str_time[3:5])
+        sec = hour * 3600 + minutes * 60 + int(str_time[6:])
         return sec
 
     def exit_to_menu(self):

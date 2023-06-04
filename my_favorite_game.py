@@ -118,7 +118,7 @@ def parse_args():
 
     parser.add_argument(
         '--ip', '-i',
-        help='ip adress flash server',
+        help='ip address flash server',
         default=None,
         required=False)
 

@@ -55,9 +55,9 @@ class ManagerWindows(Singleton):
 
         time.sleep(0.06)
         self.char = self.window_field.getch()  # получить символ
-        self.passiv_window()
+        self.passive_window()
 
-    def passiv_window(self):
+    def passive_window(self):
         if self.game_status is ManagerWindowsStatus.PLAY:
             self.window_menu.clear()
             self.window_menu.refresh()
@@ -80,7 +80,7 @@ class ManagerWindows(Singleton):
             pass
 
     def set_status(self, status):
-        self.game_status = status   # установка статуса
+        self.game_status = status  # установка статуса
 
     def get_status(self):
-        return self.game_status    #  получение статуса
+        return self.game_status  # получение статуса

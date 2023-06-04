@@ -9,9 +9,9 @@ from manager_windows import ManagerWindows
 def convert_to_format(sec):
     hour = sec // 3600
     sec %= 3600
-    min = sec // 60
+    minutes = sec // 60
     sec %= 60
-    return "%d:%02d:%02d" % (hour, min, sec)
+    return "%d:%02d:%02d" % (hour, minutes, sec)
 
 
 class ScoreTime:

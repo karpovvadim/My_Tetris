@@ -43,7 +43,7 @@ class GameField:
         self.arr = [0 for _ in range(self.max_x * self.max_y)]
         self.cur_figura = self.magic_creater.create()
         self.cur_figura.re_init_window(self.window, self.start_x, self.start_y, self.arr)
-        self.window.keypad(True)  # режим клавивиатуры
+        self.window.keypad(True)  # режим клавиатуры
         self.window.nodelay(True)   # getch() будет неблокирующим.
         self.last_time = time.time()
         self.pause_timer = 0
@@ -155,6 +155,6 @@ class GameField:
         self.cur_figura.draw()
         self.window.border()
         """
-        Обновлние отображения (синхронизизация фактического экрана с предыдущими методами рисования / удаления)
+        Обновление отображения (синхронизация фактического экрана с предыдущими методами рисования / удаления)
         """
         self.window.refresh()
